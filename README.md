@@ -181,6 +181,24 @@ pnpm check
 Individual commands are available for `build`, `test`, `test:watch`,
 `typecheck`, `lint`, and `format`.
 
+## Executable examples
+
+Render the full chart gallery in your terminal:
+
+```sh
+pnpm example:cli
+pnpm example:cli -- --chart heatmap --ascii --width 48
+```
+
+Run the interactive HTML gallery:
+
+```sh
+pnpm example:html
+```
+
+Then open [http://127.0.0.1:4173](http://127.0.0.1:4173). See the
+[examples guide](examples/README.md) for every option.
+
 ## Compatibility principles
 
 - Grid dimensions are measured in display columns, not JavaScript string length.

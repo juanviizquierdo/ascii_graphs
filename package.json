@@ -14,7 +14,11 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build"
+    "example:cli": "pnpm build && node examples/cli.mjs",
+    "example:html:build": "tsup examples/browser.ts --format iife --platform browser --global-name AsciiGraphsGallery --out-dir examples/generated --clean",
+    "example:html": "pnpm example:html:build && node examples/serve.mjs",
+    "check:examples": "pnpm example:html:build && node examples/cli.mjs --help",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm check:examples"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",

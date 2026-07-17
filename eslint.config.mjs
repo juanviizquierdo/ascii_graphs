@@ -2,7 +2,14 @@ import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["**/dist/**", "**/coverage/**", "pnpm-lock.yaml"] },
+  {
+    ignores: [
+      "**/dist/**",
+      "**/coverage/**",
+      "examples/generated/**",
+      "pnpm-lock.yaml",
+    ],
+  },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -10,6 +17,15 @@ export default tseslint.config(
     rules: {
       "@typescript-eslint/consistent-type-imports": "error",
       "@typescript-eslint/no-non-null-assertion": "error",
+    },
+  },
+  {
+    files: ["examples/*.mjs"],
+    languageOptions: {
+      globals: {
+        process: "readonly",
+        URL: "readonly",
+      },
     },
   },
 );

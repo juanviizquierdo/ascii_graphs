@@ -25,3 +25,5 @@ All notable changes to this project will be documented here. The format follows
   parts.
 - Numeric heatmaps with rectangular-matrix validation, custom domains, missing
   cells, density legends, responsive cell widths, and accessible matrix tables.
+- Executable CLI and browser galleries covering every current chart type,
+  character modes, responsive widths, and HTML themes.
