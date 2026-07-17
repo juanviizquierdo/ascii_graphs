@@ -10,6 +10,9 @@ export default defineConfig({
       "@ascii-graphs/renderer-ansi": fileURLToPath(
         new URL("./packages/renderer-ansi/src/index.ts", import.meta.url),
       ),
+      "@ascii-graphs/renderer-email": fileURLToPath(
+        new URL("./packages/renderer-email/src/index.ts", import.meta.url),
+      ),
       "@ascii-graphs/renderer-html": fileURLToPath(
         new URL("./packages/renderer-html/src/index.ts", import.meta.url),
       ),

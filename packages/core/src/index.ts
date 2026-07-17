@@ -2,6 +2,7 @@ export { bar, formatValue, layoutBar } from "./bar.js";
 export { measureText, truncateText } from "./grid.js";
 export { layout } from "./layout.js";
 export { getPalette } from "./palette.js";
+export { layoutProgress, progress } from "./progress.js";
 export { linearScale } from "./scales.js";
 export { layoutSparkline, sparkline } from "./sparkline.js";
 export type {
@@ -23,6 +24,10 @@ export type {
   DataTableRow,
   DataTableValue,
   LayoutOptions,
+  ProgressChart,
+  ProgressChartInput,
+  ProgressDatum,
+  ProgressDatumInput,
   SparklineChart,
   SparklineChartInput,
 } from "./types.js";

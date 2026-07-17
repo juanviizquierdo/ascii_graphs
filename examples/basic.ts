@@ -1,5 +1,6 @@
-import { bar, layout, sparkline } from "@ascii-graphs/core";
+import { bar, layout, progress, sparkline } from "@ascii-graphs/core";
 import { renderAnsi } from "@ascii-graphs/renderer-ansi";
+import { renderEmailParts } from "@ascii-graphs/renderer-email";
 import { renderHtml } from "@ascii-graphs/renderer-html";
 import { renderText } from "@ascii-graphs/renderer-text";
 
@@ -25,3 +26,17 @@ const trend = layout(
 );
 
 console.log(renderAnsi(trend, { colorLevel: 3 }));
+
+const release = layout(
+  progress({
+    title: "Release status",
+    data: [
+      { label: "Build", value: 72, target: 80 },
+      { label: "Deploy", value: 40 },
+    ],
+  }),
+  { width: 42 },
+);
+
+const email = renderEmailParts(release);
+console.log(email.text);

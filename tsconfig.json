@@ -7,6 +7,7 @@
     "paths": {
       "@ascii-graphs/core": ["packages/core/src/index.ts"],
       "@ascii-graphs/renderer-ansi": ["packages/renderer-ansi/src/index.ts"],
+      "@ascii-graphs/renderer-email": ["packages/renderer-email/src/index.ts"],
       "@ascii-graphs/renderer-html": ["packages/renderer-html/src/index.ts"],
       "@ascii-graphs/renderer-text": ["packages/renderer-text/src/index.ts"]
     },

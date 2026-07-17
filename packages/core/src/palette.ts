@@ -5,6 +5,8 @@ export interface CharacterPalette {
   baseline: string;
   ellipsis: string;
   missing: string;
+  emptyFill: string;
+  target: string;
   density: readonly string[];
 }
 
@@ -14,6 +16,8 @@ const palettes: Record<CharacterSet, CharacterPalette> = {
     baseline: "|",
     ellipsis: "...",
     missing: "?",
+    emptyFill: ".",
+    target: "|",
     density: [".", ":", "-", "=", "+", "*", "#", "@"],
   },
   unicode: {
@@ -21,6 +25,8 @@ const palettes: Record<CharacterSet, CharacterPalette> = {
     baseline: "│",
     ellipsis: "…",
     missing: "·",
+    emptyFill: "░",
+    target: "│",
     density: ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
   },
 };

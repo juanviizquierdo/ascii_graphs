@@ -98,7 +98,36 @@ export interface SparklineChart extends ChartBase {
   readonly max?: number;
 }
 
-export type Chart = BarChart | SparklineChart;
+export interface ProgressDatumInput {
+  label: string;
+  value: number;
+  min?: number;
+  max?: number;
+  target?: number;
+}
+
+export interface ProgressDatum {
+  readonly label: string;
+  readonly value: number;
+  readonly min: number;
+  readonly max: number;
+  readonly target?: number;
+}
+
+export interface ProgressChartInput extends ChartBase {
+  data: readonly ProgressDatumInput[];
+  showPercentage?: boolean;
+  clamp?: boolean;
+}
+
+export interface ProgressChart extends ChartBase {
+  readonly type: "progress";
+  readonly data: readonly ProgressDatum[];
+  readonly showPercentage: boolean;
+  readonly clamp: boolean;
+}
+
+export type Chart = BarChart | SparklineChart | ProgressChart;
 export type ChartType = Chart["type"];
 
 export interface LayoutOptions {

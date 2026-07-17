@@ -19,3 +19,7 @@ All notable changes to this project will be documented here. The format follows
 - ANSI renderer with 16-color, 256-color, true-color, `NO_COLOR`, and
   `FORCE_COLOR` support.
 - Control-character rejection and bounded grid allocation.
+- Multi-row progress charts with per-row ranges, optional target markers,
+  overflow clamping, and accessible percentage metadata.
+- Dedicated email renderer producing matching plain-text and inline-style HTML
+  parts.

@@ -33,11 +33,13 @@ The current alpha foundation includes:
 
 - Horizontal bar charts with positive, negative, and zero values.
 - Compact sparklines with missing-value and downsampling support.
+- Multi-row progress and goal charts with custom ranges and target markers.
 - Strict ASCII and richer Unicode character sets.
 - Unicode display-column-aware label measurement and truncation.
 - Plain-text output with no control sequences.
 - Semantic ANSI color with 16-color, 256-color, and true-color output.
 - Escaped HTML output with a screen-reader description and data table.
+- Paired plain-text and HTML email parts generated from the same grid.
 - No DOM, terminal, or filesystem dependency in the core package.
 
 ## Quick start
@@ -100,18 +102,39 @@ const html = renderHtml(grid, {
 });
 ```
 
+For multipart email, generate both alternatives together:
+
+```ts
+import { layout, progress } from "@ascii-graphs/core";
+import { renderEmailParts } from "@ascii-graphs/renderer-email";
+
+const release = layout(
+  progress({
+    title: "Release status",
+    data: [
+      { label: "Build", value: 72, target: 80 },
+      { label: "Deploy", value: 40 },
+    ],
+  }),
+  { width: 42 },
+);
+
+const { text, html } = renderEmailParts(release);
+```
+
 All chart titles and labels are HTML-escaped. The generated `<pre>` is
 accompanied by a semantic data table when `accessibility` is `"table"` or
 `"both"`.
 
 ## Packages
 
-| Package                       | Responsibility                                                  |
-| ----------------------------- | --------------------------------------------------------------- |
-| `@ascii-graphs/core`          | Validation, scales, layout, Unicode measurement, and `CellGrid` |
-| `@ascii-graphs/renderer-text` | Plain ASCII/Unicode string serialization                        |
-| `@ascii-graphs/renderer-ansi` | Portable 16/256/true-color terminal rendering                   |
-| `@ascii-graphs/renderer-html` | Browser and email-safe accessible HTML                          |
+| Package                        | Responsibility                                                  |
+| ------------------------------ | --------------------------------------------------------------- |
+| `@ascii-graphs/core`           | Validation, scales, layout, Unicode measurement, and `CellGrid` |
+| `@ascii-graphs/renderer-text`  | Plain ASCII/Unicode string serialization                        |
+| `@ascii-graphs/renderer-ansi`  | Portable 16/256/true-color terminal rendering                   |
+| `@ascii-graphs/renderer-email` | Matching plain-text and accessible HTML email parts             |
+| `@ascii-graphs/renderer-html`  | Browser and email-safe accessible HTML                          |
 
 The scoped names are provisional until npm and trademark availability are
 confirmed.
@@ -151,9 +174,11 @@ HTML and plain-text MIME parts and retain the accessible data table.
 - [x] Accessible HTML/email rendering
 - [x] ANSI renderer
 - [x] Sparklines
+- [x] Progress and goal indicators
+- [x] Paired email rendering
 - [ ] Vertical bars
 - [ ] Line charts and downsampling
-- [ ] Progress indicators and heatmaps
+- [ ] Heatmaps and status grids
 - [ ] JSON/CSV command-line interface
 - [ ] Browser playground
 
