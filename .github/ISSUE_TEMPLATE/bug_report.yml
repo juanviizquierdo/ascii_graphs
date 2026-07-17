@@ -1,0 +1,24 @@
+name: Bug report
+description: Report incorrect, unsafe, or inconsistent chart behavior
+body:
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description:
+        Include the chart specification, renderer, charset, and output.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: Package versions, runtime, terminal/browser/email client
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
