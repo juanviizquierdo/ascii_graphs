@@ -1,5 +1,6 @@
 export { bar, formatValue, layoutBar } from "./bar.js";
 export { measureText, truncateText } from "./grid.js";
+export { heatmap, layoutHeatmap } from "./heatmap.js";
 export { layout } from "./layout.js";
 export { getPalette } from "./palette.js";
 export { layoutProgress, progress } from "./progress.js";
@@ -23,6 +24,10 @@ export type {
   DataTableColumn,
   DataTableRow,
   DataTableValue,
+  HeatmapChart,
+  HeatmapChartInput,
+  HeatmapRow,
+  HeatmapRowInput,
   LayoutOptions,
   ProgressChart,
   ProgressChartInput,

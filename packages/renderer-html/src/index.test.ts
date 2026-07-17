@@ -1,4 +1,4 @@
-import { bar, layout, layoutBar, sparkline } from "@ascii-graphs/core";
+import { bar, heatmap, layout, layoutBar, sparkline } from "@ascii-graphs/core";
 import { describe, expect, it } from "vitest";
 
 import { renderHtml } from "./index.js";
@@ -40,5 +40,19 @@ describe("renderHtml", () => {
 
     expect(html).toContain("<th>Index</th><th>Value</th>");
     expect(html).toContain('<th scope="row">1</th><td>—</td>');
+  });
+
+  it("renders heatmap matrices as complete accessible tables", () => {
+    const html = renderHtml(
+      layout(
+        heatmap({
+          columns: ["Mon", "Tue"],
+          rows: [{ label: "API", values: [3, null] }],
+        }),
+      ),
+    );
+
+    expect(html).toContain("<th>Row</th><th>Mon</th><th>Tue</th>");
+    expect(html).toContain('<th scope="row">API</th><td>3</td><td>—</td>');
   });
 });

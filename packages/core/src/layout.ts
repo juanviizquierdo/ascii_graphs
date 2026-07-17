@@ -1,4 +1,5 @@
 import { layoutBar } from "./bar.js";
+import { layoutHeatmap } from "./heatmap.js";
 import { layoutProgress } from "./progress.js";
 import { layoutSparkline } from "./sparkline.js";
 
@@ -12,6 +13,8 @@ export function layout(chart: Chart, options: LayoutOptions = {}): CellGrid {
       return layoutSparkline(chart, options);
     case "progress":
       return layoutProgress(chart, options);
+    case "heatmap":
+      return layoutHeatmap(chart, options);
     default: {
       const unreachable: never = chart;
       throw new TypeError(

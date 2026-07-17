@@ -23,3 +23,5 @@ All notable changes to this project will be documented here. The format follows
   overflow clamping, and accessible percentage metadata.
 - Dedicated email renderer producing matching plain-text and inline-style HTML
   parts.
+- Numeric heatmaps with rectangular-matrix validation, custom domains, missing
+  cells, density legends, responsive cell widths, and accessible matrix tables.

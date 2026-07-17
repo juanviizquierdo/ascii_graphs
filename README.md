@@ -34,6 +34,7 @@ The current alpha foundation includes:
 - Horizontal bar charts with positive, negative, and zero values.
 - Compact sparklines with missing-value and downsampling support.
 - Multi-row progress and goal charts with custom ranges and target markers.
+- Numeric heatmaps with missing cells, density legends, and matrix tables.
 - Strict ASCII and richer Unicode character sets.
 - Unicode display-column-aware label measurement and truncation.
 - Plain-text output with no control sequences.
@@ -122,6 +123,35 @@ const release = layout(
 const { text, html } = renderEmailParts(release);
 ```
 
+Heatmaps use the same portable grid and automatically adapt cell width to the
+available viewport:
+
+```ts
+import { heatmap, layout } from "@ascii-graphs/core";
+
+const activity = layout(
+  heatmap({
+    title: "Activity",
+    columns: ["Mon", "Tue", "Wed"],
+    rows: [
+      { label: "API", values: [0, 5, 10] },
+      { label: "Web", values: [null, 5, 0] },
+    ],
+  }),
+  { width: 36 },
+);
+```
+
+```text
+Activity
+
+    Mon   Tue   Wed
+API ▁▁▁▁▁ ▄▄▄▄▄ █████
+Web ·     ▄▄▄▄▄ ▁▁▁▁▁
+
+0 ▁▂▃▄▅▆▇█ 10  · missing
+```
+
 All chart titles and labels are HTML-escaped. The generated `<pre>` is
 accompanied by a semantic data table when `accessibility` is `"table"` or
 `"both"`.
@@ -176,9 +206,10 @@ HTML and plain-text MIME parts and retain the accessible data table.
 - [x] Sparklines
 - [x] Progress and goal indicators
 - [x] Paired email rendering
+- [x] Numeric heatmaps
 - [ ] Vertical bars
 - [ ] Line charts and downsampling
-- [ ] Heatmaps and status grids
+- [ ] Categorical status grids
 - [ ] JSON/CSV command-line interface
 - [ ] Browser playground
 

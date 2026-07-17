@@ -127,7 +127,34 @@ export interface ProgressChart extends ChartBase {
   readonly clamp: boolean;
 }
 
-export type Chart = BarChart | SparklineChart | ProgressChart;
+export interface HeatmapRowInput {
+  label: string;
+  values: readonly (number | null)[];
+}
+
+export interface HeatmapRow {
+  readonly label: string;
+  readonly values: readonly (number | null)[];
+}
+
+export interface HeatmapChartInput extends ChartBase {
+  columns: readonly string[];
+  rows: readonly HeatmapRowInput[];
+  min?: number;
+  max?: number;
+  showLegend?: boolean;
+}
+
+export interface HeatmapChart extends ChartBase {
+  readonly type: "heatmap";
+  readonly columns: readonly string[];
+  readonly rows: readonly HeatmapRow[];
+  readonly min?: number;
+  readonly max?: number;
+  readonly showLegend: boolean;
+}
+
+export type Chart = BarChart | SparklineChart | ProgressChart | HeatmapChart;
 export type ChartType = Chart["type"];
 
 export interface LayoutOptions {

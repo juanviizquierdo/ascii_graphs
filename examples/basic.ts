@@ -1,4 +1,4 @@
-import { bar, layout, progress, sparkline } from "@ascii-graphs/core";
+import { bar, heatmap, layout, progress, sparkline } from "@ascii-graphs/core";
 import { renderAnsi } from "@ascii-graphs/renderer-ansi";
 import { renderEmailParts } from "@ascii-graphs/renderer-email";
 import { renderHtml } from "@ascii-graphs/renderer-html";
@@ -40,3 +40,17 @@ const release = layout(
 
 const email = renderEmailParts(release);
 console.log(email.text);
+
+const activity = layout(
+  heatmap({
+    title: "Activity",
+    columns: ["Mon", "Tue", "Wed"],
+    rows: [
+      { label: "API", values: [0, 5, 10] },
+      { label: "Web", values: [null, 5, 0] },
+    ],
+  }),
+  { width: 36 },
+);
+
+console.log(renderText(activity));
