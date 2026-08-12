@@ -337,29 +337,44 @@ export function layoutDistribution(
   } else if (chart.mode === "strip" || chart.mode === "beeswarm") {
     const centerY = plotTop + Math.floor((plotHeight - 1) / 2);
     const occupied = new Map<number, number>();
+    const placed: Array<{ x: number; y: number }> = [];
     sorted.forEach((value, index) => {
       const x = toX(value);
       const collision = occupied.get(x) ?? 0;
       occupied.set(x, collision + 1);
-      const offset =
-        chart.mode === "beeswarm"
-          ? collision === 0
-            ? 0
-            : Math.ceil(collision / 2) * (collision % 2 === 0 ? -1 : 1)
-          : 0;
+      let offset = 0;
+      if (chart.mode === "beeswarm") {
+        const offsets = [0];
+        for (let distance = 1; distance < plotHeight; distance += 1)
+          offsets.push(distance, -distance);
+        offset =
+          offsets.find((candidate) => {
+            const y = centerY + candidate;
+            return (
+              y >= plotTop &&
+              y < plotBottom &&
+              !placed.some(
+                (point) => point.y === y && Math.abs(point.x - x) <= 1,
+              )
+            );
+          }) ?? 0;
+      }
       const y = Math.max(plotTop, Math.min(plotBottom - 1, centerY + offset));
+      placed.push({ x, y });
       grid.set(
         x,
         y,
         charset === "ascii"
-          ? collision > 0
+          ? offset !== 0 || collision > 0
             ? "x"
             : "o"
-          : collision > 0
+          : offset !== 0 || collision > 0
             ? "◆"
             : "●",
         "series",
-        { foreground: collision > 0 ? "accent" : "series1" },
+        {
+          foreground: offset !== 0 || collision > 0 ? "accent" : "series1",
+        },
         { label: String(index), value },
       );
     });
@@ -395,6 +410,18 @@ export function layoutDistribution(
     );
     const theoryMin = theoretical[0] ?? -1;
     const theoryMax = theoretical.at(-1) ?? 1;
+    for (let step = 0; step < plotWidth; step += 1) {
+      const x = plotX + step;
+      const y =
+        plotBottom -
+        1 -
+        Math.round(
+          (step / Math.max(1, plotWidth - 1)) * Math.max(1, plotHeight - 2),
+        );
+      grid.set(x, y, charset === "ascii" ? "." : "·", "axis", {
+        foreground: "muted",
+      });
+    }
     sorted.forEach((value, index) => {
       const theory = theoretical[index] ?? 0;
       const x =
