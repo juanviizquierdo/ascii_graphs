@@ -1235,7 +1235,8 @@ export function layoutCalibration(
   const grid = new GridBuilder(width, height);
   const top = title(grid, chart, palette.ellipsis);
   const left = 6,
-    bottom = height - 2;
+    bottom = height - 3,
+    plotRight = width - 1;
   const px = (v: number) => left + Math.round(v * (width - left - 2));
   const py = (v: number) => bottom - Math.round(v * (bottom - top));
   drawLine(
@@ -1434,20 +1435,24 @@ export function layoutCumulativeFlow(
   const grid = new GridBuilder(width, height);
   const top = title(grid, chart, palette.ellipsis);
   const left = 6,
-    bottom = height - 2;
+    bottom = height - 3,
+    plotRight = width - 1;
   const totals = chart.labels.map((_, i) =>
     chart.stages.reduce((sum, stage) => sum + (stage.values[i] ?? 0), 0),
   );
   const max = Math.max(1, ...totals);
-  chart.labels.forEach((_, i) => {
-    const x =
-      left +
-      Math.round(
-        (i / Math.max(1, chart.labels.length - 1)) * (width - left - 2),
-      );
+  for (let x = left; x <= plotRight; x += 1) {
+    const position =
+      ((x - left) / Math.max(1, plotRight - left)) *
+      Math.max(0, chart.labels.length - 1);
+    const from = Math.floor(position);
+    const to = Math.min(chart.labels.length - 1, from + 1);
+    const mix = position - from;
     let cumulative = 0;
     chart.stages.forEach((stage, si) => {
-      const value = stage.values[i] ?? 0;
+      const startValue = stage.values[from] ?? 0;
+      const endValue = stage.values[to] ?? startValue;
+      const value = startValue + (endValue - startValue) * mix;
       const y0 = bottom - Math.round((cumulative / max) * (bottom - top));
       cumulative += value;
       const y1 = bottom - Math.round((cumulative / max) * (bottom - top));
@@ -1462,12 +1467,31 @@ export function layoutCumulativeFlow(
           { foreground: `series${(si % 4) + 1}` as "series1" },
         );
     });
+  }
+  chart.labels.forEach((label, index) => {
+    const x =
+      left +
+      Math.round(
+        (index / Math.max(1, chart.labels.length - 1)) * (plotRight - left),
+      );
+    const text = truncateText(label, 7, palette.ellipsis);
+    grid.text(
+      Math.max(left, Math.min(width - measureText(text), x - 2)),
+      height - 2,
+      text,
+      "label",
+      { foreground: "muted" },
+    );
   });
   chart.stages.forEach((stage, i) =>
     grid.text(
-      left + i * 14,
+      Math.min(
+        width - 1,
+        left +
+          i * Math.max(9, Math.floor((width - left) / chart.stages.length)),
+      ),
       height - 1,
-      `${i + 1}:${truncateText(stage.label, 10, palette.ellipsis)}`,
+      `${i + 1}:${truncateText(stage.label, 7, palette.ellipsis)}`,
       "label",
     ),
   );
