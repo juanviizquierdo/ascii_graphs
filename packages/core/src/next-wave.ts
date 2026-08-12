@@ -453,7 +453,7 @@ function layoutMarimekko(chart: NextChart, options: LayoutOptions): CellGrid {
 }
 
 function layoutCartogram(chart: NextChart, options: LayoutOptions): CellGrid {
-  const { width, height, charset, palette, grid, top } = setup(chart, options);
+  const { width, height, charset, grid, top } = setup(chart, options);
   const rowTotals = chart.matrix.map((row) =>
     row.reduce((sum, value) => sum + Math.max(0, value), 0),
   );
@@ -462,6 +462,8 @@ function layoutCartogram(chart: NextChart, options: LayoutOptions): CellGrid {
     rowTotals.reduce((sum, value) => sum + value, 0),
   );
   let y = top;
+  const fills =
+    charset === "ascii" ? [".", ":", "+", "#"] : ["░", "▒", "▓", "█"];
   rowTotals.forEach((rowTotal, rowIndex) => {
     const rowHeight =
       rowIndex === rowTotals.length - 1
@@ -484,20 +486,16 @@ function layoutCartogram(chart: NextChart, options: LayoutOptions): CellGrid {
           grid.set(
             columnX,
             rowY,
-            charset === "ascii"
-              ? ([".", ":", "+", "#"][(rowIndex + columnIndex) % 4] ?? "#")
-              : (palette.density[
-                  ((rowIndex + columnIndex) % (palette.density.length - 1)) + 1
-                ] ?? "#"),
+            fills[(rowIndex + columnIndex) % fills.length] ?? "#",
             "series",
             {
               foreground:
                 `series${((rowIndex + columnIndex) % 4) + 1}` as "series1",
             },
           );
-      if (cellWidth >= measureText(label) + 2 && rowHeight >= 2)
+      if (cellWidth >= measureText(label) + 2 && rowHeight >= 3)
         grid.text(
-          x + 1,
+          x + Math.max(1, Math.floor((cellWidth - measureText(label)) / 2)),
           y + Math.floor(rowHeight / 2),
           label,
           "value",
