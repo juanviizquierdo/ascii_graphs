@@ -1,0 +1,18 @@
+{
+  "chart": {
+    "type": "bar",
+    "title": "Deployments by region",
+    "data": [
+      { "label": "Europe", "value": 42 },
+      { "label": "Americas", "value": 31 },
+      { "label": "Asia", "value": 54 }
+    ]
+  },
+  "layout": {
+    "width": 44,
+    "charset": "unicode"
+  },
+  "output": {
+    "format": "text"
+  }
+}

@@ -28,11 +28,13 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm example:html:build
+      - run: pnpm example:integrations:browser:build
       - name: Assemble static site
         run: |
           mkdir -p _site/generated
           cp examples/gallery.html _site/index.html
           cp examples/generated/browser.global.js _site/generated/browser.global.js
+          cp -R examples/integrations _site/integrations
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

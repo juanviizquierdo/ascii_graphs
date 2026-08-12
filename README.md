@@ -167,6 +167,33 @@ const { text, html } = renderEmailParts(grid);
 // Attach `text` and `html` as the two alternatives in your email provider.
 ```
 
+## Use it in different languages and places
+
+JavaScript and TypeScript applications use the packages directly. Other
+languages can send a JSON request to the included stdin/stdout bridge and
+receive plain text, ANSI, accessible HTML, or matching email alternatives.
+
+| Context                | Ready-to-run example                                               |
+| ---------------------- | ------------------------------------------------------------------ |
+| Node.js CLI            | [`node-cli.mjs`](examples/integrations/node-cli.mjs)               |
+| Python process         | [`python_report.py`](examples/integrations/python_report.py)       |
+| PHP application        | [`php-report.php`](examples/integrations/php-report.php)           |
+| Ruby job               | [`ruby_report.rb`](examples/integrations/ruby_report.rb)           |
+| Shell or cron          | [`shell-report.sh`](examples/integrations/shell-report.sh)         |
+| Plain browser          | [`browser-widget.html`](examples/integrations/browser-widget.html) |
+| React component        | [`react-component.tsx`](examples/integrations/react-component.tsx) |
+| Server-rendered page   | [`http-server.mjs`](examples/integrations/http-server.mjs)         |
+| Email worker           | [`email-report.mjs`](examples/integrations/email-report.mjs)       |
+| GitHub Actions summary | [`github-action.yml`](examples/integrations/github-action.yml)     |
+
+```sh
+pnpm example:integrations
+node examples/integrations/render-json.mjs < examples/integrations/chart.json
+```
+
+See the [integration cookbook](examples/README.md#integration-cookbook) for
+commands, the portable JSON shape, and browser/server previews.
+
 ## 113 chart styles
 
 The catalog covers quick status reports through dense analytical views. Every

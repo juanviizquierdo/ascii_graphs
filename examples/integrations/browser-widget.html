@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ASCII Graphs browser widget</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        font-family: ui-monospace, monospace;
+      }
+      body {
+        display: grid;
+        min-height: 100vh;
+        margin: 0;
+        place-items: center;
+        background: Canvas;
+        color: CanvasText;
+      }
+      main {
+        max-width: calc(100vw - 2rem);
+        padding: 1rem;
+        border: 1px solid GrayText;
+        overflow-x: auto;
+      }
+      h1 {
+        margin-top: 0;
+        font-size: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Embedded in a plain HTML page</h1>
+      <div id="chart"></div>
+    </main>
+    <script src="./generated/browser-widget.global.js"></script>
+  </body>
+</html>

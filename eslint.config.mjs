@@ -7,6 +7,7 @@ export default tseslint.config(
       "**/dist/**",
       "**/coverage/**",
       "examples/generated/**",
+      "examples/integrations/generated/**",
       "pnpm-lock.yaml",
     ],
   },
@@ -20,7 +21,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["examples/*.mjs"],
+    files: ["examples/**/*.mjs"],
     languageOptions: {
       globals: {
         process: "readonly",

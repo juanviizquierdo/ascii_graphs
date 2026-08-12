@@ -363,6 +363,55 @@
         font-size: 0.82rem;
       }
 
+      .integration-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        border-top: 1px solid var(--line);
+        border-left: 1px solid var(--line);
+      }
+
+      .integration-card {
+        min-width: 0;
+        padding: 24px;
+        border-right: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        background: color-mix(in srgb, var(--paper) 75%, transparent);
+      }
+
+      .integration-card h3 {
+        margin: 0 0 8px;
+        font-size: 0.95rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .integration-card p {
+        min-height: 3.2em;
+        margin: 0 0 20px;
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .integration-card code {
+        display: block;
+        overflow-x: auto;
+        padding: 12px;
+        background: var(--code);
+        color: var(--code-ink);
+        font-size: 0.74rem;
+        white-space: nowrap;
+      }
+
+      .integration-link {
+        display: inline-block;
+        margin-top: 18px;
+        color: var(--accent);
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
       .gallery-section {
         padding-top: 96px;
       }
@@ -550,6 +599,10 @@
           grid-template-columns: repeat(2, 1fr);
         }
 
+        .integration-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
         .controls {
           grid-template-columns: repeat(2, 1fr);
         }
@@ -624,7 +677,8 @@
           padding-bottom: 0;
         }
 
-        .renderers {
+        .renderers,
+        .integration-grid {
           grid-template-columns: 1fr;
         }
 
@@ -658,6 +712,7 @@
       <a class="wordmark" href="#top">ASCII GRAPHS</a>
       <div class="nav-links">
         <a href="#start">Quick start</a>
+        <a href="#integrations">Integrations</a>
         <a href="#gallery-heading">Charts</a>
         <a id="github-link" href="#" hidden>GitHub</a>
       </div>
@@ -785,9 +840,72 @@ console.log(renderText(grid));</code></pre>
         </div>
       </section>
 
+      <section
+        class="section shell"
+        id="integrations"
+        aria-labelledby="integrations-heading"
+      >
+        <div class="section-heading">
+          <span class="section-index">03 / Integrations</span>
+          <div>
+            <h2 id="integrations-heading">One engine. Many homes.</h2>
+            <p class="section-copy">
+              Use the packages directly from JavaScript and TypeScript, or send
+              JSON over stdin from Python, PHP, Ruby, shell scripts, CI jobs,
+              servers, and email workers.
+            </p>
+          </div>
+        </div>
+        <div class="integration-grid">
+          <article class="integration-card">
+            <h3>Node.js / CLI</h3>
+            <p>
+              Detect terminal color and fit charts to the available columns.
+            </p>
+            <code>node integrations/node-cli.mjs</code>
+          </article>
+          <article class="integration-card">
+            <h3>Python · PHP · Ruby</h3>
+            <p>
+              Send one JSON request to a short-lived Node rendering process.
+            </p>
+            <code>python3 integrations/python_report.py</code>
+          </article>
+          <article class="integration-card">
+            <h3>Browser / React</h3>
+            <p>Embed safe HTML with a description and semantic data table.</p>
+            <code>renderHtml(layout(chart))</code>
+            <a
+              class="integration-link"
+              href="./integrations/browser-widget.html"
+              >Open browser example →</a
+            >
+          </article>
+          <article class="integration-card">
+            <h3>HTTP services</h3>
+            <p>Render dashboards on the server without a browser runtime.</p>
+            <code>node integrations/http-server.mjs</code>
+          </article>
+          <article class="integration-card">
+            <h3>Email reports</h3>
+            <p>
+              Generate matching plain-text and accessible HTML alternatives.
+            </p>
+            <code>renderEmailParts(grid)</code>
+          </article>
+          <article class="integration-card">
+            <h3>CI / GitHub Actions</h3>
+            <p>
+              Place a deterministic chart inside a job summary or build log.
+            </p>
+            <code>&gt;&gt; "$GITHUB_STEP_SUMMARY"</code>
+          </article>
+        </div>
+      </section>
+
       <section class="gallery-section shell" aria-labelledby="gallery-heading">
         <div class="section-heading">
-          <span class="section-index">03 / Live catalog</span>
+          <span class="section-index">04 / Live catalog</span>
           <div>
             <h2 id="gallery-heading">Every chart is executable.</h2>
             <p class="section-copy">
