@@ -699,8 +699,11 @@ function createCharts() {
       mode: "alluvial",
       links: [
         { source: "Free", target: "Active", value: 58 },
+        { source: "Free", target: "Churned", value: 20 },
         { source: "Active", target: "Paid", value: 34 },
+        { source: "Active", target: "Churned", value: 12 },
         { source: "Paid", target: "Retained", value: 27 },
+        { source: "Paid", target: "Churned", value: 7 },
       ],
     }),
     tree: hierarchy({
