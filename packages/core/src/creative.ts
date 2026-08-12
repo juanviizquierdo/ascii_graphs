@@ -1953,28 +1953,66 @@ export function layoutHexTileMap(
     maxY = Math.max(...chart.data.map((d) => d.y)),
     minV = Math.min(...chart.data.map((d) => d.value)),
     maxV = Math.max(...chart.data.map((d) => d.value));
-  chart.data.forEach((item) => {
-    const x = Math.round(
-      ((item.x - minX) / Math.max(1, maxX - minX)) * (width - 5),
+  const columns = Math.max(1, Math.round(maxX - minX) + 1);
+  const rows = Math.max(1, Math.round(maxY - minY) + 1);
+  const tileWidth = 6;
+  const tileHeight = 3;
+  const naturalWidth = columns * tileWidth + 3;
+  const naturalHeight = rows * tileHeight;
+  const useTileGrid =
+    naturalWidth <= width &&
+    naturalHeight <= height - top &&
+    chart.data.every(
+      ({ x, y }) => Number.isInteger(x - minX) && Number.isInteger(y - minY),
     );
-    const y =
-      top +
-      Math.round(
-        ((item.y - minY) / Math.max(1, maxY - minY)) * (height - top - 2),
-      );
+  const gridOffsetX = Math.max(0, Math.floor((width - naturalWidth) / 2));
+  chart.data.forEach((item) => {
+    const gridRow = Math.round(item.y - minY);
+    const x = useTileGrid
+      ? gridOffsetX +
+        Math.round(item.x - minX) * tileWidth +
+        (gridRow % 2 === 0 ? 0 : 3)
+      : Math.round(
+          ((item.x - minX) / Math.max(1, maxX - minX)) * (width - tileWidth),
+        );
+    const y = useTileGrid
+      ? top + gridRow * tileHeight
+      : top +
+        Math.round(
+          ((item.y - minY) / Math.max(1, maxY - minY)) *
+            (height - top - tileHeight),
+        );
     const level = Math.round(
       ((item.value - minV) / Math.max(1e-9, maxV - minV)) *
         (palette.density.length - 1),
     );
+    const style = {
+      foreground: `series${(level % 4) + 1}` as "series1",
+      bold: true,
+    };
     grid.text(
       x,
       y,
-      charset === "ascii"
-        ? `[${truncateText(item.label, 2, "")} ]`
-        : `⬡${truncateText(item.label, 2, "")}`,
+      charset === "ascii" ? " /##\\ " : " ╱██╲ ",
       "series",
-      { foreground: `series${(level % 4) + 1}` as "series1" },
+      style,
+    );
+    grid.text(
+      x,
+      y + 1,
+      `${charset === "ascii" ? "|" : "│"} ${truncateText(item.label, 2, "").padEnd(2)} ${
+        charset === "ascii" ? "|" : "│"
+      }`,
+      "value",
+      style,
       { label: item.label, value: item.value },
+    );
+    grid.text(
+      x,
+      y + 2,
+      charset === "ascii" ? " \\##/ " : " ╲██╱ ",
+      "series",
+      style,
     );
   });
   return chartTable(
