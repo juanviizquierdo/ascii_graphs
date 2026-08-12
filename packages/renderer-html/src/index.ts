@@ -15,6 +15,8 @@ export interface HtmlRenderOptions {
   accessibility?: "description" | "table" | "both";
   email?: boolean;
   fontFamily?: string;
+  fontSize?: number;
+  lineHeight?: number;
   theme?: Partial<HtmlTheme>;
 }
 
@@ -121,11 +123,23 @@ export function renderHtml(
   const fontFamily =
     options.fontFamily ??
     "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace";
+  const fontSize = options.fontSize;
+  const lineHeight = options.lineHeight ?? 1.25;
+  if (
+    fontSize !== undefined &&
+    (!Number.isFinite(fontSize) || fontSize < 6 || fontSize > 72)
+  )
+    throw new RangeError("fontSize must be a finite number between 6 and 72.");
+  if (!Number.isFinite(lineHeight) || lineHeight < 0.8 || lineHeight > 3)
+    throw new RangeError(
+      "lineHeight must be a finite number between 0.8 and 3.",
+    );
   const preStyle = [
     "margin:0",
     "white-space:pre",
-    "line-height:1.25",
+    `line-height:${lineHeight}`,
     `font-family:${fontFamily}`,
+    ...(fontSize === undefined ? [] : [`font-size:${fontSize}px`]),
     "font-variant-ligatures:none",
     `color:${theme.foreground}`,
     `background:${theme.background}`,

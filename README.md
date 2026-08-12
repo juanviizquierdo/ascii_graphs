@@ -1,14 +1,27 @@
-# ASCII Graphs
+<div align="center">
 
-Portable, deterministic text charts for terminals, browsers, email reports,
-logs, and documentation.
+<pre>
+ █████╗ ███████╗ ██████╗██╗██╗     ██████╗ ██████╗  █████╗ ██████╗ ██╗  ██╗███████╗
+██╔══██╗██╔════╝██╔════╝██║██║    ██╔════╝ ██╔══██╗██╔══██╗██╔══██╗██║  ██║██╔════╝
+███████║███████╗██║     ██║██║    ██║  ███╗██████╔╝███████║██████╔╝███████║███████╗
+██╔══██║╚════██║██║     ██║██║    ██║   ██║██╔══██╗██╔══██║██╔═══╝ ██╔══██║╚════██║
+██║  ██║███████║╚██████╗██║██║    ╚██████╔╝██║  ██║██║  ██║██║     ██║  ██║███████║
+╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝╚═╝     ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝╚══════╝
+</pre>
 
-> **Project status:** early alpha. The package names and public API may change
-> before the first public release.
+**Portable, deterministic text charts for terminals, websites, email reports,
+logs, and docs.**
 
-ASCII Graphs separates chart layout from output formatting. A chart is laid out
-once as a semantic grid of character cells, then rendered as plain text or safe,
-accessible HTML.
+[![License: MIT](https://img.shields.io/badge/license-MIT-26211c?style=flat-square)](LICENSE)
+[![Node 20+](https://img.shields.io/badge/node-%E2%89%A520-315c3b?style=flat-square)](package.json)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-a43816?style=flat-square)](tsconfig.json)
+[![Release candidate](https://img.shields.io/badge/release-0.1.0--alpha.0-71685e?style=flat-square)](CHANGELOG.md)
+
+[Quick start](#quick-start) · [Chart catalog](#113-chart-styles) ·
+[Renderers](#one-grid-four-outputs) · [Examples](#run-the-gallery) ·
+[Contributing](CONTRIBUTING.md)
+
+</div>
 
 ```text
 Monthly revenue
@@ -16,44 +29,38 @@ Monthly revenue
 Jan │███████████████                    42
 Feb │████████████████████████           68
 Mar │██████████████████████████████████ 91
+    └────────────────────────────────────
+     0                                 100
 ```
 
-## Why this project?
-
-Most text chart libraries are designed specifically for a terminal. ANSI color,
-terminal capability detection, and chart layout become inseparable, making the
-output difficult to reuse in a browser or email. ASCII Graphs keeps those layers
-independent:
+ASCII Graphs treats a chart as data, not a terminal side effect. It validates
+the input and lays it out as a semantic grid of character cells. That same grid
+can then become plain text, ANSI color, safe accessible HTML, or matching email
+parts.
 
 ```text
-validated chart → semantic CellGrid → text / ANSI / HTML / future renderers
+chart specification → semantic CellGrid → text / ANSI / HTML / email
 ```
 
-The current alpha foundation includes:
+The core package has no DOM, terminal, or filesystem dependency. Output stays
+useful without color, CSS, JavaScript, or even Unicode.
 
-- Horizontal bar charts with positive, negative, and zero values.
-- Compact sparklines with missing-value and downsampling support.
-- Multi-row progress and goal charts with custom ranges and target markers.
-- Numeric heatmaps with missing cells, density legends, and matrix tables.
-- Strict ASCII and richer Unicode character sets.
-- Unicode display-column-aware label measurement and truncation.
-- Plain-text output with no control sequences.
-- Semantic ANSI color with 16-color, 256-color, and true-color output.
-- Escaped HTML output with a screen-reader description and data table.
-- Paired plain-text and HTML email parts generated from the same grid.
-- No DOM, terminal, or filesystem dependency in the core package.
+> [!IMPORTANT] The project is currently a `0.1.0-alpha.0` release candidate.
+> Package names and the public API may change during the alpha series.
 
 ## Quick start
 
-The packages have not been published yet. From this repository:
+Install the prerelease packages from the `next` channel after the first public
+release:
 
 ```sh
-pnpm install
-pnpm build
+pnpm add @ascii-graphs/core@next @ascii-graphs/renderer-text@next
 ```
 
+Describe a chart, lay it out for the available space, and render it:
+
 ```ts
-import { bar, layoutBar } from "@ascii-graphs/core";
+import { bar, layout } from "@ascii-graphs/core";
 import { renderText } from "@ascii-graphs/renderer-text";
 
 const chart = bar({
@@ -65,73 +72,210 @@ const chart = bar({
   ],
 });
 
-const grid = layoutBar(chart, { width: 42, charset: "unicode" });
+const grid = layout(chart, {
+  width: 42,
+  charset: "unicode", // use "ascii" for strict 7-bit output
+});
+
 console.log(renderText(grid));
 ```
 
-The generic layout API works across chart types:
+Every chart uses the same `layout(chart, options)` entry point. Width, height,
+and character set belong to layout; output-specific concerns belong to the
+renderer.
+
+## One grid, four outputs
+
+| Package                                                   | Use it for                                       | Output characteristics                                 |
+| --------------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------ |
+| [`@ascii-graphs/renderer-text`](packages/renderer-text)   | Logs, Markdown, snapshots, redirected CLI output | Plain text with no control sequences                   |
+| [`@ascii-graphs/renderer-ansi`](packages/renderer-ansi)   | Interactive terminal UIs and reports             | 16-color, 256-color, or true-color ANSI                |
+| [`@ascii-graphs/renderer-html`](packages/renderer-html)   | Minimal websites and web reports                 | Escaped HTML, screen-reader text, semantic tables      |
+| [`@ascii-graphs/renderer-email`](packages/renderer-email) | Transactional and scheduled reports              | Matching `text/plain` and accessible `text/html` parts |
+
+### Terminal color
 
 ```ts
-import { layout, sparkline } from "@ascii-graphs/core";
 import { detectColorLevel, renderAnsi } from "@ascii-graphs/renderer-ansi";
 
-const trend = layout(
-  sparkline({
-    label: "Latency",
-    values: [18, 22, null, 19, 35, 27],
-  }),
-);
+const colorLevel = detectColorLevel({
+  isTTY: process.stdout.isTTY,
+  env: process.env,
+});
 
-console.log(
-  renderAnsi(trend, {
-    colorLevel: detectColorLevel({
-      isTTY: process.stdout.isTTY,
-      env: process.env,
-    }),
-  }),
-);
+process.stdout.write(renderAnsi(grid, { colorLevel }));
 ```
 
-Render the same grid for a web page or HTML email:
+### Accessible HTML
 
 ```ts
 import { renderHtml } from "@ascii-graphs/renderer-html";
 
 const html = renderHtml(grid, {
-  accessibility: "both",
-  email: true,
+  accessibility: "both", // description + semantic data table
+  fontSize: 14, // pixels, from 6 to 72
+  lineHeight: 1.35,
 });
 ```
 
-For multipart email, generate both alternatives together:
+All chart content is escaped. Accessibility modes can add a concise description,
+a semantic data table, or both alongside the visual `<pre>`.
+
+### Configurable legends and multi-line charts
+
+Funnel and pyramid stage legends can sit inside the shape or on either side and
+use any semantic palette color:
 
 ```ts
-import { layout, progress } from "@ascii-graphs/core";
+import { funnel, layout, multiLine } from "@ascii-graphs/core";
+
+const conversion = layout(
+  funnel({
+    title: "Signup funnel",
+    legend: { position: "left", color: "accent" },
+    data: [
+      { label: "Visit", value: 1_000 },
+      { label: "Trial", value: 540 },
+      { label: "Paid", value: 120 },
+    ],
+  }),
+);
+
+const traffic = layout(
+  multiLine({
+    title: "Regional traffic",
+    legend: { position: "top", color: "muted" },
+    series: [
+      { label: "EU", values: [18, 24, 21, 35] },
+      { label: "US", values: [14, 19, 27, 25] },
+      { label: "APAC", values: [22, 17, 31, 29] },
+    ],
+  }),
+);
+```
+
+Legend colors are semantic tokens: `muted`, `accent`, `positive`, `negative`, or
+`series1` through `series4`. Multi-line legends support `top` and `bottom`;
+funnel and pyramid legends support `inside`, `left`, and `right`.
+
+### Multipart email
+
+```ts
 import { renderEmailParts } from "@ascii-graphs/renderer-email";
 
-const release = layout(
-  progress({
-    title: "Release status",
+const { text, html } = renderEmailParts(grid);
+// Attach `text` and `html` as the two alternatives in your email provider.
+```
+
+## 113 chart styles
+
+The catalog covers quick status reports through dense analytical views. Every
+style supports portable text output and the generic layout API.
+
+| Family                | Included charts                                                                                                                           |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| **Trends**            | Sparkline, line, multi-line, area, stacked area, theme river, step, horizon, control, bump, fan                                           |
+| **Comparison**        | Bar, column, grouped bar, stacked bar, pictorial bar, lollipop, dumbbell, range, bullet                                                   |
+| **Distribution**      | Histogram, box plot, density, ridgeline, raincloud, violin, strip, beeswarm, ECDF, Q-Q                                                    |
+| **Composition**       | Donut, pie, treemap, mosaic, waffle, Likert, funnel, pyramid, Pareto                                                                      |
+| **Relationships**     | Scatter, hexbin, bubble, connected scatter, correlation matrix, adjacency matrix, arc, radar, parallel coordinates, chord, UpSet, ternary |
+| **Time & planning**   | Gantt, timeline, spiral timeline, barcode/event, calendar heatmap, candlestick, waterfall                                                 |
+| **Flows & hierarchy** | Sankey, alluvial, cumulative flow, tree, organization, dependency, network, flame, sunburst                                               |
+| **Maps & routes**     | Choropleth, world choropleth, country atlas, continent, route, migration flow, hex tile, dot density                                      |
+| **Operations**        | Progress and goals, gauge, numeric heatmap, status grid, error intervals, error budget, burndown/burnup                                   |
+| **Statistical**       | Contour, survival, ROC/precision-recall, calibration                                                                                      |
+| **Markets**           | Point-and-figure, market profile/TPO, order-book depth                                                                                    |
+| **Radial**            | Wind rose, polar area                                                                                                                     |
+| **Advanced analysis** | Streamgraph, Hovmöller, slopegraph, small multiples, dendrograms, confusion matrix, lift/gains, forest, Bland–Altman                      |
+| **Signals & process** | Spectrogram, waveform, queue timeline, critical path                                                                                      |
+| **Advanced markets**  | Footprint, Renko, Kagi                                                                                                                    |
+| **Advanced maps**     | Voronoi, cartogram, transit                                                                                                               |
+
+The country atlas includes Spain, France, Germany, Italy, the United Kingdom,
+the United States, Japan, and Australia. Its silhouettes are rasterized from
+[Natural Earth’s public-domain 1:110m Admin 0 country data](https://www.naturalearthdata.com/downloads/110m-cultural-vectors/110m-admin-0-countries/).
+Continent maps cover Europe, Africa, Asia, North America, South America, and
+Oceania, with country values addressed through three-letter codes.
+
+```ts
+import { continentMap, countryMap, layout } from "@ascii-graphs/core";
+
+const atlas = layout(
+  countryMap({
+    title: "Country activity",
     data: [
-      { label: "Build", value: 72, target: 80 },
-      { label: "Deploy", value: 40 },
+      { country: "spain", value: 72 },
+      { country: "france", value: 54 },
+      { country: "italy", value: 83 },
+      { country: "japan", value: 61 },
+    ],
+  }),
+  { width: 60 },
+);
+
+const europe = layout(
+  continentMap({
+    title: "European activity",
+    continent: "europe",
+    data: [
+      { country: "ESP", value: 72 },
+      { country: "FRA", value: 64 },
+      { country: "DEU", value: 81 },
+    ],
+  }),
+  { width: 60 },
+);
+```
+
+<details>
+<summary><strong>See a few more chart specifications</strong></summary>
+
+### Trends with missing data
+
+```ts
+import { layout, line } from "@ascii-graphs/core";
+
+const traffic = layout(
+  line({
+    title: "Requests per minute",
+    label: "RPM",
+    values: [18, 24, 21, 35, 31, null, 38, 52, 44, 61],
+  }),
+  { width: 48, height: 12 },
+);
+```
+
+Missing values remain explicit gaps. Downsampling preserves important peaks
+instead of silently flattening the series.
+
+### Operational status
+
+```ts
+import { layout, statusGrid } from "@ascii-graphs/core";
+
+const health = layout(
+  statusGrid({
+    title: "Service health",
+    columns: ["API", "Web", "Jobs"],
+    rows: [
+      { label: "Prod", values: ["success", "success", "warning"] },
+      { label: "Stage", values: ["success", "unknown", "failure"] },
     ],
   }),
   { width: 42 },
 );
-
-const { text, html } = renderEmailParts(release);
 ```
 
-Heatmaps use the same portable grid and automatically adapt cell width to the
-available viewport:
+Status meaning is preserved through shape and text, not color alone.
+
+### Numeric heatmaps
 
 ```ts
 import { heatmap, layout } from "@ascii-graphs/core";
 
 const activity = layout(
   heatmap({
-    title: "Activity",
+    title: "Weekly activity",
     columns: ["Mon", "Tue", "Wed"],
     rows: [
       { label: "API", values: [0, 5, 10] },
@@ -142,96 +286,86 @@ const activity = layout(
 );
 ```
 
-```text
-Activity
+</details>
 
-    Mon   Tue   Wed
-API ▁▁▁▁▁ ▄▄▄▄▄ █████
-Web ·     ▄▄▄▄▄ ▁▁▁▁▁
+## Run the gallery
 
-0 ▁▂▃▄▅▆▇█ 10  · missing
+The repository includes two executable galleries built from the real workspace
+packages—not copied output or screenshots.
+
+### Interactive browser gallery
+
+```sh
+pnpm install
+pnpm example:html
 ```
 
-All chart titles and labels are HTML-escaped. The generated `<pre>` is
-accompanied by a semantic data table when `accessibility` is `"table"` or
-`"both"`.
+Open [http://127.0.0.1:4173](http://127.0.0.1:4173). Search all 113 chart
+styles, resize the virtual viewport, adjust font size, switch between ASCII and
+Unicode, and compare paper and terminal themes. GitHub Pages deployment is
+automated by [`pages.yml`](.github/workflows/pages.yml).
 
-## Packages
+### Terminal gallery
 
-| Package                        | Responsibility                                                  |
-| ------------------------------ | --------------------------------------------------------------- |
-| `@ascii-graphs/core`           | Validation, scales, layout, Unicode measurement, and `CellGrid` |
-| `@ascii-graphs/renderer-text`  | Plain ASCII/Unicode string serialization                        |
-| `@ascii-graphs/renderer-ansi`  | Portable 16/256/true-color terminal rendering                   |
-| `@ascii-graphs/renderer-email` | Matching plain-text and accessible HTML email parts             |
-| `@ascii-graphs/renderer-html`  | Browser and email-safe accessible HTML                          |
+```sh
+pnpm example:cli
+pnpm example:cli -- --chart heatmap --ascii --width 48
+pnpm example:cli -- --chart sankey --unicode --width 64
+pnpm example:cli -- --help
+```
 
-The scoped names are provisional until npm and trademark availability are
-confirmed.
+See the [examples guide](examples/README.md) for all available chart names and
+flags.
+
+## Design principles
+
+- **Portable by construction.** Layout does not know whether output is headed
+  for a terminal, browser, inbox, or snapshot test.
+- **Deterministic.** Equal input and layout options produce equal output.
+- **Monochrome first.** Shape, glyph, position, and labels carry meaning before
+  color is added.
+- **Display-column aware.** Labels are measured and truncated by Unicode display
+  width rather than JavaScript string length.
+- **Strict at the boundary.** Invalid numbers, unsafe terminal controls,
+  newlines, and bidirectional formatting controls are rejected.
+- **Accessible beyond the picture.** HTML output can include descriptions and
+  the underlying data as a semantic table.
+
+## Workspace packages
+
+| Package                                                   | Responsibility                                                             |
+| --------------------------------------------------------- | -------------------------------------------------------------------------- |
+| [`@ascii-graphs/core`](packages/core)                     | Validation, chart specifications, scales, layout, palettes, and `CellGrid` |
+| [`@ascii-graphs/renderer-text`](packages/renderer-text)   | Plain ASCII and Unicode serialization                                      |
+| [`@ascii-graphs/renderer-ansi`](packages/renderer-ansi)   | Portable semantic terminal color                                           |
+| [`@ascii-graphs/renderer-html`](packages/renderer-html)   | Safe and accessible browser/email HTML                                     |
+| [`@ascii-graphs/renderer-email`](packages/renderer-email) | Paired plain-text and HTML email output                                    |
 
 ## Development
 
-Requires Node 20 or newer and pnpm.
+Requires Node.js 20 or newer and pnpm.
 
 ```sh
 pnpm install
 pnpm check
 ```
 
-Individual commands are available for `build`, `test`, `test:watch`,
-`typecheck`, `lint`, and `format`.
+`pnpm check` runs formatting, linting, type checks, tests, package builds, and
+example checks. `pnpm release:check` additionally packs and inspects every
+public package.
 
-## Executable examples
-
-Render the full chart gallery in your terminal:
-
-```sh
-pnpm example:cli
-pnpm example:cli -- --chart heatmap --ascii --width 48
-```
-
-Run the interactive HTML gallery:
-
-```sh
-pnpm example:html
-```
-
-Then open [http://127.0.0.1:4173](http://127.0.0.1:4173). See the
-[examples guide](examples/README.md) for every option.
-
-## Compatibility principles
-
-- Grid dimensions are measured in display columns, not JavaScript string length.
-- ASCII mode uses `#`, `|`, and ordinary punctuation.
-- Unicode mode uses block and box-drawing characters.
-- Missing or non-finite numeric values are rejected rather than silently
-  changed.
-- Titles and labels reject terminal controls, newlines, and bidirectional
-  formatting controls.
-- Redirected plain-text output never contains ANSI escape sequences.
-- Rendering is deterministic so output can be snapshot-tested.
-
-Email clients can substitute their own fonts. For critical reports, include both
-HTML and plain-text MIME parts and retain the accessible data table.
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request. Security
+reports follow [SECURITY.md](SECURITY.md), and release maintainers should use
+the checklist in [RELEASING.md](RELEASING.md).
 
 ## Roadmap
 
-- [x] Target-neutral cell grid
-- [x] Horizontal bar chart
-- [x] ASCII and Unicode text rendering
-- [x] Accessible HTML/email rendering
-- [x] ANSI renderer
-- [x] Sparklines
-- [x] Progress and goal indicators
-- [x] Paired email rendering
-- [x] Numeric heatmaps
-- [ ] Vertical bars
-- [ ] Line charts and downsampling
-- [ ] Categorical status grids
-- [ ] JSON/CSV command-line interface
-- [ ] Browser playground
+- JSON/CSV command-line interface
+- Browser playground with editable datasets
+- More renderer themes and embeddable presets
+- Stable `1.0` API after alpha feedback
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
+Ideas, bug reports, and new chart proposals are welcome.
 
 ## License
 

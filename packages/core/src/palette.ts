@@ -3,6 +3,7 @@ import type { CharacterSet } from "./types.js";
 export interface CharacterPalette {
   fill: string;
   baseline: string;
+  horizontalAxis: string;
   ellipsis: string;
   missing: string;
   emptyFill: string;
@@ -14,6 +15,7 @@ const palettes: Record<CharacterSet, CharacterPalette> = {
   ascii: {
     fill: "#",
     baseline: "|",
+    horizontalAxis: "-",
     ellipsis: "...",
     missing: "?",
     emptyFill: ".",
@@ -23,6 +25,7 @@ const palettes: Record<CharacterSet, CharacterPalette> = {
   unicode: {
     fill: "█",
     baseline: "│",
+    horizontalAxis: "─",
     ellipsis: "…",
     missing: "·",
     emptyFill: "░",

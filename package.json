@@ -1,7 +1,7 @@
 {
   "name": "ascii-graphs-workspace",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0-alpha.0",
   "packageManager": "pnpm@11.1.1",
   "engines": {
     "node": ">=20"
@@ -18,7 +18,10 @@
     "example:html:build": "tsup examples/browser.ts --format iife --platform browser --global-name AsciiGraphsGallery --out-dir examples/generated --clean",
     "example:html": "pnpm example:html:build && node examples/serve.mjs",
     "check:examples": "pnpm example:html:build && node examples/cli.mjs --help",
-    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm check:examples"
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm check:examples",
+    "verify:packages": "node scripts/verify-packages.mjs",
+    "release:check": "pnpm check && pnpm verify:packages",
+    "release:dry-run": "pnpm release:check && pnpm -r publish --dry-run --tag next --access public --no-git-checks"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",

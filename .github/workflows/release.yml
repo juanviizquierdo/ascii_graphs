@@ -1,0 +1,62 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Pack and verify without publishing
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: npm-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: npm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+      - run: npm install --global npm@^11.5.1
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm release:check
+      - run:
+          pnpm --filter './packages/**' --recursive pack --pack-destination
+          artifacts
+      - name: Show package tarballs
+        run: ls -lh artifacts
+      - uses: actions/upload-artifact@v4
+        with:
+          name: npm-packages-${{ github.sha }}
+          path: artifacts/*.tgz
+          if-no-files-found: error
+      - name: Validate release tag
+        if: ${{ !inputs.dry_run }}
+        run: |
+          expected="v$(node --print "require('./package.json').version")"
+          if [[ "$GITHUB_REF_TYPE" != "tag" || "$GITHUB_REF_NAME" != "$expected" ]]; then
+            echo "Publishing requires the matching $expected tag; received $GITHUB_REF."
+            exit 1
+          fi
+      - name: Publish prerelease packages
+        if: ${{ !inputs.dry_run }}
+        run: |
+          npm publish artifacts/ascii-graphs-core-*.tgz --access public --tag next --provenance
+          npm publish artifacts/ascii-graphs-renderer-text-*.tgz --access public --tag next --provenance
+          npm publish artifacts/ascii-graphs-renderer-ansi-*.tgz --access public --tag next --provenance
+          npm publish artifacts/ascii-graphs-renderer-html-*.tgz --access public --tag next --provenance
+          npm publish artifacts/ascii-graphs-renderer-email-*.tgz --access public --tag next --provenance

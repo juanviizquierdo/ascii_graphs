@@ -8,6 +8,9 @@ Thanks for helping make portable text charts better.
 2. Run `pnpm install`.
 3. Run `pnpm check` before submitting a pull request.
 
+Maintainers preparing a release must also run `pnpm release:check` and follow
+the checklist in [RELEASING.md](RELEASING.md).
+
 ## Architecture rules
 
 - Chart modules validate and normalize input, then produce a semantic

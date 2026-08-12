@@ -3,236 +3,856 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ASCII Graphs — executable gallery</title>
+    <meta
+      name="description"
+      content="Explore 113 portable ASCII and Unicode charts for terminals, websites, and email reports."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect width=%2264%22 height=%2264%22 fill=%22%2326211c%22/><text x=%2232%22 y=%2243%22 text-anchor=%22middle%22 font-size=%2236%22 fill=%22%23f7f2e8%22>[*]</text></svg>"
+    />
+    <title>ASCII Graphs — portable text charts</title>
     <style>
       :root {
         color-scheme: light;
-        --page: #eee9df;
-        --ink: #28241f;
-        --muted: #766d63;
-        --panel: #f8f4eb;
-        --line: #b8ab9b;
-        --accent: #9a3412;
+        --page: #e9e3d7;
+        --paper: #f7f2e8;
+        --ink: #26211c;
+        --muted: #71685e;
+        --line: #a99d8e;
+        --soft-line: #d2c8ba;
+        --accent: #a43816;
+        --accent-ink: #fffaf0;
+        --positive: #315c3b;
+        --shadow: #342d25;
+        --code: #211e1a;
+        --code-ink: #d9f9df;
       }
 
       :root[data-theme="terminal"] {
         color-scheme: dark;
-        --page: #07110a;
-        --ink: #b7f7c5;
-        --muted: #668f70;
-        --panel: #0c1b11;
-        --line: #285537;
-        --accent: #7dd3fc;
+        --page: #071009;
+        --paper: #0d1910;
+        --ink: #b9efc3;
+        --muted: #71927a;
+        --line: #315e3b;
+        --soft-line: #1b3923;
+        --accent: #76d89a;
+        --accent-ink: #071009;
+        --positive: #8ee6a9;
+        --shadow: #183a22;
+        --code: #030805;
+        --code-ink: #b9efc3;
       }
 
       * {
         box-sizing: border-box;
       }
 
+      html {
+        scroll-behavior: smooth;
+      }
+
       body {
         margin: 0;
+        overflow-x: hidden;
         color: var(--ink);
         background: var(--page);
-        font-family:
-          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+        line-height: 1.55;
       }
 
       body::before {
-        content: "";
         position: fixed;
         inset: 0;
-        pointer-events: none;
-        opacity: 0.045;
+        z-index: -1;
+        content: "";
+        opacity: 0.055;
         background-image: repeating-linear-gradient(
           0deg,
           currentColor 0 1px,
-          transparent 1px 4px
+          transparent 1px 5px
         );
+        pointer-events: none;
       }
 
-      main {
-        width: min(1120px, calc(100% - 32px));
-        margin: 0 auto;
-        padding: 64px 0 96px;
+      a {
+        color: inherit;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.25em;
       }
-      header {
-        display: grid;
-        gap: 16px;
-        margin-bottom: 36px;
-      }
-      .eyebrow {
-        margin: 0;
+
+      a:hover {
         color: var(--accent);
+      }
+
+      a:focus-visible,
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible,
+      summary:focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 3px;
+      }
+
+      .shell {
+        width: min(1180px, calc(100% - 36px));
+        margin-inline: auto;
+      }
+
+      .site-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 70px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .wordmark {
+        font-weight: 800;
+        letter-spacing: -0.05em;
+        text-decoration: none;
+      }
+
+      .wordmark::before {
+        color: var(--accent);
+        content: "[";
+      }
+
+      .wordmark::after {
+        color: var(--accent);
+        content: "]";
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 24px;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.08fr) minmax(300px, 0.92fr);
+        gap: clamp(36px, 8vw, 100px);
+        align-items: center;
+        min-height: min(770px, calc(100vh - 70px));
+        padding-block: 76px;
+      }
+
+      .eyebrow {
+        margin: 0 0 22px;
+        color: var(--accent);
+        font-size: 0.76rem;
+        font-weight: 800;
         letter-spacing: 0.16em;
         text-transform: uppercase;
       }
+
       h1 {
-        max-width: 15ch;
+        max-width: 9ch;
         margin: 0;
-        font-size: clamp(2.25rem, 7vw, 5.6rem);
-        line-height: 0.95;
-        letter-spacing: -0.075em;
+        font-size: clamp(3.25rem, 9vw, 7.9rem);
+        line-height: 0.82;
+        letter-spacing: -0.095em;
       }
-      .intro {
-        max-width: 68ch;
+
+      .lede {
+        max-width: 60ch;
+        margin: 32px 0 0;
+        color: var(--muted);
+        font-size: clamp(1rem, 2vw, 1.18rem);
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 34px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 9px 16px;
+        border: 1px solid var(--ink);
+        background: var(--accent);
+        color: var(--accent-ink);
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-decoration: none;
+        text-transform: uppercase;
+        box-shadow: 4px 4px 0 var(--shadow);
+        transition:
+          transform 120ms ease,
+          box-shadow 120ms ease;
+      }
+
+      .button:hover {
+        color: var(--accent-ink);
+        transform: translate(2px, 2px);
+        box-shadow: 2px 2px 0 var(--shadow);
+      }
+
+      .button.secondary {
+        background: transparent;
+        color: var(--ink);
+      }
+
+      .hero-chart {
+        position: relative;
+        padding: 24px;
+        border: 1px solid var(--ink);
+        background: var(--code);
+        color: var(--code-ink);
+        box-shadow: 12px 12px 0 var(--shadow);
+        transform: rotate(1deg);
+      }
+
+      .hero-chart::before {
+        display: block;
+        margin-bottom: 20px;
+        color: #71927a;
+        content: "● ● ●   report.txt";
+        font-size: 0.72rem;
+        letter-spacing: 0.12em;
+      }
+
+      .hero-chart pre {
+        overflow: hidden;
+        margin: 0;
+        font: inherit;
+        line-height: 1.45;
+      }
+
+      .ticker {
+        overflow: hidden;
+        border-block: 1px solid var(--line);
+        background: var(--paper);
+      }
+
+      .ticker p {
+        width: max-content;
+        margin: 0;
+        padding: 13px 0;
+        color: var(--muted);
+        font-size: 0.76rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .section {
+        padding-block: 96px;
+      }
+
+      .section-heading {
+        display: grid;
+        grid-template-columns: minmax(0, 0.65fr) minmax(0, 1.35fr);
+        gap: 44px;
+        align-items: end;
+        margin-bottom: 44px;
+      }
+
+      .section-index {
+        color: var(--accent);
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 4.4rem);
+        line-height: 0.95;
+        letter-spacing: -0.065em;
+      }
+
+      .section-copy {
+        max-width: 65ch;
+        margin: 18px 0 0;
+        color: var(--muted);
+      }
+
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        border-top: 1px solid var(--line);
+        border-left: 1px solid var(--line);
+      }
+
+      .step {
+        min-width: 0;
+        padding: 26px;
+        border-right: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        background: color-mix(in srgb, var(--paper) 75%, transparent);
+      }
+
+      .step-number {
+        color: var(--accent);
+        font-size: 0.72rem;
+        font-weight: 800;
+      }
+
+      .step h3 {
+        margin: 36px 0 12px;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .step p {
         margin: 0;
         color: var(--muted);
+        font-size: 0.88rem;
+      }
+
+      .code-block {
+        overflow-x: auto;
+        margin-top: 28px;
+        padding: 24px;
+        border-left: 4px solid var(--accent);
+        background: var(--code);
+        color: var(--code-ink);
+        box-shadow: 7px 7px 0 var(--shadow);
+      }
+
+      .code-block pre {
+        width: max-content;
+        min-width: 100%;
+        margin: 0;
+        font: inherit;
+        font-size: 0.86rem;
         line-height: 1.7;
+      }
+
+      .renderers {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        border-block: 1px solid var(--line);
+      }
+
+      .renderer {
+        min-height: 210px;
+        padding: 24px;
+        border-right: 1px solid var(--line);
+      }
+
+      .renderer:first-child {
+        border-left: 1px solid var(--line);
+      }
+
+      .renderer-mark {
+        display: block;
+        color: var(--accent);
+        font-size: 1.5rem;
+      }
+
+      .renderer h3 {
+        margin: 40px 0 8px;
+        font-size: 0.95rem;
+      }
+
+      .renderer p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .gallery-section {
+        padding-top: 96px;
       }
 
       .controls {
         position: sticky;
         top: 12px;
-        z-index: 2;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 18px;
+        z-index: 5;
+        display: grid;
+        grid-template-columns: minmax(180px, 1fr) repeat(4, auto);
+        gap: 16px;
         align-items: end;
-        margin-bottom: 28px;
+        margin-bottom: 32px;
         padding: 16px;
         border: 1px solid var(--line);
-        background: color-mix(in srgb, var(--panel) 92%, transparent);
+        background: color-mix(in srgb, var(--paper) 93%, transparent);
+        box-shadow: 5px 5px 0 var(--shadow);
         backdrop-filter: blur(12px);
-        box-shadow: 4px 4px 0 var(--line);
+      }
+
+      .controls-primary,
+      .controls-options {
+        display: contents;
+      }
+
+      .controls-toggle {
+        display: none;
+        min-height: 44px;
+        padding: 8px 12px;
+        border: 1px solid var(--line);
+        border-radius: 0;
+        background: var(--ink);
+        color: var(--paper);
+        font: inherit;
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        cursor: pointer;
       }
 
       label {
         display: grid;
-        gap: 7px;
+        gap: 6px;
         color: var(--muted);
-        font-size: 0.78rem;
-        text-transform: uppercase;
+        font-size: 0.7rem;
+        font-weight: 800;
         letter-spacing: 0.08em;
+        text-transform: uppercase;
       }
+
       select,
       input {
-        accent-color: var(--accent);
-        color: var(--ink);
-        background: var(--page);
+        min-height: 40px;
         border: 1px solid var(--line);
+        border-radius: 0;
+        background: var(--page);
+        color: var(--ink);
         font: inherit;
       }
+
+      input[type="search"] {
+        width: 100%;
+        padding: 8px 11px;
+      }
+
+      input[type="range"] {
+        width: 180px;
+        accent-color: var(--accent);
+      }
+
       select {
         min-width: 132px;
         padding: 8px 10px;
       }
-      input[type="range"] {
-        width: min(320px, 56vw);
+
+      .gallery-status {
+        margin: -12px 0 24px;
+        color: var(--muted);
+        font-size: 0.78rem;
       }
 
       #gallery {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(min(100%, 470px), 1fr));
-        gap: 22px;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr));
+        gap: 24px;
       }
+
       .chart-card {
         min-width: 0;
         padding: 22px;
         border: 1px solid var(--line);
-        background: var(--panel);
-        box-shadow: 6px 6px 0 var(--line);
+        background: var(--paper);
+        box-shadow: 6px 6px 0 var(--shadow);
+        transition: transform 140ms ease;
       }
+
+      .chart-card:hover {
+        transform: translateY(-2px);
+      }
+
       .chart-card h2 {
         margin: 0 0 8px;
-        font-size: 1rem;
-        text-transform: uppercase;
+        font-size: 0.95rem;
         letter-spacing: 0.06em;
+        text-transform: uppercase;
       }
+
       .chart-card > p {
         min-height: 3em;
-        margin: 0 0 24px;
+        margin: 0 0 22px;
         color: var(--muted);
-        font-size: 0.86rem;
-        line-height: 1.5;
+        font-size: 0.82rem;
       }
+
       .chart-output {
         overflow-x: auto;
         padding: 18px;
         border: 1px dashed var(--line);
         background: var(--page);
       }
+
       .chart-output pre,
       details pre {
         width: max-content;
         min-width: 100%;
         font-size: 13px;
       }
+
       details {
-        margin-top: 18px;
+        margin-top: 16px;
         color: var(--muted);
+        font-size: 0.8rem;
       }
+
       summary {
         cursor: pointer;
       }
+
       details pre {
         overflow-x: auto;
         color: var(--ink);
       }
 
-      footer {
-        margin-top: 42px;
+      .empty-state {
+        grid-column: 1 / -1;
+        padding: 52px 24px;
+        border: 1px dashed var(--line);
         color: var(--muted);
-        font-size: 0.82rem;
+        text-align: center;
       }
+
+      footer {
+        margin-top: 96px;
+        padding-block: 36px 56px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 0.78rem;
+      }
+
+      footer strong,
       code {
         color: var(--accent);
       }
 
-      @media (max-width: 600px) {
-        main {
-          width: min(100% - 20px, 1120px);
-          padding-top: 36px;
+      @media (max-width: 900px) {
+        .hero,
+        .section-heading {
+          grid-template-columns: 1fr;
         }
+
+        .hero {
+          min-height: auto;
+        }
+
+        .hero-chart {
+          max-width: 600px;
+        }
+
+        .steps {
+          grid-template-columns: 1fr;
+        }
+
+        .renderers {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .controls {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        input[type="range"] {
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 720px) {
         .controls {
           top: 6px;
+          display: block;
+          margin-bottom: 18px;
+          padding: 10px;
+          box-shadow: 3px 3px 0 var(--shadow);
         }
+
+        .controls-primary {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) auto;
+          gap: 8px;
+          align-items: end;
+        }
+
+        .controls-toggle {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .controls-options {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 14px 10px;
+          margin-top: 14px;
+          padding-top: 14px;
+          border-top: 1px dashed var(--line);
+        }
+
+        .controls-options[hidden] {
+          display: none;
+        }
+
+        .gallery-status {
+          margin-top: 0;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .shell {
+          width: min(100% - 20px, 1180px);
+        }
+
+        .nav-links a:not(:last-child) {
+          display: none;
+        }
+
+        .hero {
+          padding-block: 54px 70px;
+        }
+
+        .hero-chart {
+          padding: 17px;
+          font-size: 0.72rem;
+          box-shadow: 7px 7px 0 var(--shadow);
+        }
+
+        .section,
+        .gallery-section {
+          padding-top: 72px;
+          padding-bottom: 0;
+        }
+
+        .renderers {
+          grid-template-columns: 1fr;
+        }
+
+        .renderer {
+          min-height: 170px;
+          border-left: 1px solid var(--line);
+          border-bottom: 1px solid var(--line);
+        }
+
         .chart-card {
           padding: 16px;
-          box-shadow: 3px 3px 0 var(--line);
+          box-shadow: 3px 3px 0 var(--shadow);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        *,
+        *::before,
+        *::after {
+          transition-duration: 0.01ms !important;
         }
       }
     </style>
   </head>
   <body>
-    <main>
-      <header>
-        <p class="eyebrow">// executable browser example</p>
-        <h1>ASCII graphs, rendered anywhere.</h1>
-        <p class="intro">
-          This page runs the actual workspace packages. Change the character
-          set, viewport width, and color theme to see the same semantic grid
-          adapt for websites, email reports, and terminal output.
-        </p>
+    <nav class="site-nav shell" aria-label="Main navigation">
+      <a class="wordmark" href="#top">ASCII GRAPHS</a>
+      <div class="nav-links">
+        <a href="#start">Quick start</a>
+        <a href="#gallery-heading">Charts</a>
+        <a id="github-link" href="#" hidden>GitHub</a>
+      </div>
+    </nav>
+
+    <main id="top">
+      <header class="hero shell">
+        <div>
+          <p class="eyebrow">// one grid · every surface</p>
+          <h1>Data, drawn in type.</h1>
+          <p class="lede">
+            Portable, deterministic ASCII and Unicode charts for terminals,
+            minimal websites, email reports, logs, and documentation.
+          </p>
+          <div class="hero-actions">
+            <a class="button" href="#gallery-heading">Explore 113 charts ↓</a>
+            <a class="button secondary" href="#start">Read the guide</a>
+          </div>
+        </div>
+        <div class="hero-chart" aria-label="Example ASCII revenue chart">
+          <pre>
+Monthly revenue
+
+Jan │███████████████                    42
+Feb │████████████████████████           68
+Mar │██████████████████████████████████ 91
+    └────────────────────────────────────
+     0                                 100
+
+trend  ▁▂▃▃▄▅▆▅▇█  +116.7%</pre>
+        </div>
       </header>
 
-      <section class="controls" aria-label="Gallery controls">
-        <label>
-          Width: <output id="width-value" for="width">52</output>
-          <input id="width" type="range" min="32" max="76" value="52" />
-        </label>
-        <label>
-          Characters
-          <select id="charset">
-            <option value="unicode">Unicode</option>
-            <option value="ascii">Strict ASCII</option>
-          </select>
-        </label>
-        <label>
-          Theme
-          <select id="theme">
-            <option value="paper">Paper</option>
-            <option value="terminal">Terminal</option>
-          </select>
-        </label>
+      <div class="ticker" aria-hidden="true">
+        <p>
+          BAR · LINE · SCATTER · HEATMAP · SANKEY · GANTT · TREEMAP · RADAR ·
+          CANDLESTICK · HISTOGRAM · SUNBURST · WAFFLE · NETWORK · AREA ·
+          PROGRESS · BAR · LINE · SCATTER · HEATMAP · SANKEY · GANTT
+        </p>
+      </div>
+
+      <section class="section shell" id="start">
+        <div class="section-heading">
+          <span class="section-index">01 / Quick start</span>
+          <div>
+            <h2>Describe once. Render anywhere.</h2>
+            <p class="section-copy">
+              Chart construction, layout, and output are separate. Your data
+              becomes a semantic cell grid, then any renderer can turn that grid
+              into text, ANSI, accessible HTML, or a multipart email.
+            </p>
+          </div>
+        </div>
+
+        <div class="steps">
+          <article class="step">
+            <span class="step-number">[01]</span>
+            <h3>Describe</h3>
+            <p>Choose a chart factory and pass ordinary typed data.</p>
+          </article>
+          <article class="step">
+            <span class="step-number">[02]</span>
+            <h3>Lay out</h3>
+            <p>Set width, height, and strict ASCII or richer Unicode glyphs.</p>
+          </article>
+          <article class="step">
+            <span class="step-number">[03]</span>
+            <h3>Render</h3>
+            <p>Send the same grid to the terminal, browser, or inbox.</p>
+          </article>
+        </div>
+
+        <div class="code-block" aria-label="TypeScript usage example">
+          <pre><code>pnpm add @ascii-graphs/core@next @ascii-graphs/renderer-text@next
+
+import { bar, layout } from "@ascii-graphs/core";
+import { renderText } from "@ascii-graphs/renderer-text";
+
+const chart = bar({
+  title: "Monthly revenue",
+  data: [
+    { label: "Jan", value: 42 },
+    { label: "Feb", value: 68 },
+    { label: "Mar", value: 91 },
+  ],
+});
+
+const grid = layout(chart, { width: 42, charset: "unicode" });
+console.log(renderText(grid));</code></pre>
+        </div>
       </section>
 
-      <section id="gallery" aria-live="polite"></section>
+      <section class="section shell" aria-labelledby="renderers-heading">
+        <div class="section-heading">
+          <span class="section-index">02 / Outputs</span>
+          <div>
+            <h2 id="renderers-heading">Built for hostile surfaces.</h2>
+            <p class="section-copy">
+              No DOM or terminal dependency in core. Output remains useful
+              without color, JavaScript, CSS, or even Unicode.
+            </p>
+          </div>
+        </div>
+        <div class="renderers">
+          <article class="renderer">
+            <span class="renderer-mark">&gt;_</span>
+            <h3>Plain text</h3>
+            <p>Logs, Markdown, snapshots, and redirected CLI output.</p>
+          </article>
+          <article class="renderer">
+            <span class="renderer-mark">\x1b</span>
+            <h3>ANSI</h3>
+            <p>Semantic 16-color, 256-color, or true-color terminals.</p>
+          </article>
+          <article class="renderer">
+            <span class="renderer-mark">&lt;/&gt;</span>
+            <h3>Accessible HTML</h3>
+            <p>Escaped markup with descriptions and semantic data tables.</p>
+          </article>
+          <article class="renderer">
+            <span class="renderer-mark">@</span>
+            <h3>Email</h3>
+            <p>Matching plain-text and HTML MIME parts from one grid.</p>
+          </article>
+        </div>
+      </section>
 
-      <footer>
-        Run locally with <code>pnpm example:html</code>. Open
-        <code>http://127.0.0.1:4173</code> in a browser.
-      </footer>
+      <section class="gallery-section shell" aria-labelledby="gallery-heading">
+        <div class="section-heading">
+          <span class="section-index">03 / Live catalog</span>
+          <div>
+            <h2 id="gallery-heading">Every chart is executable.</h2>
+            <p class="section-copy">
+              Search the catalog, resize the virtual viewport, switch glyph
+              sets, or invert the theme. These examples run the actual library.
+            </p>
+          </div>
+        </div>
+
+        <section class="controls" aria-label="Gallery controls">
+          <div class="controls-primary">
+            <label>
+              Find a chart
+              <input
+                id="search"
+                type="search"
+                placeholder="Try: flow, timeline…"
+                autocomplete="off"
+              />
+            </label>
+            <button
+              class="controls-toggle"
+              id="controls-toggle"
+              type="button"
+              aria-controls="controls-options"
+              aria-expanded="false"
+            >
+              Settings
+            </button>
+          </div>
+          <div class="controls-options" id="controls-options">
+            <label>
+              Width: <output id="width-value" for="width">52</output>
+              <input id="width" type="range" min="32" max="76" value="52" />
+            </label>
+            <label>
+              Font: <output id="font-size-value" for="font-size">13px</output>
+              <input id="font-size" type="range" min="10" max="18" value="13" />
+            </label>
+            <label>
+              Characters
+              <select id="charset">
+                <option value="unicode">Unicode</option>
+                <option value="ascii">Strict ASCII</option>
+              </select>
+            </label>
+            <label>
+              Theme
+              <select id="theme">
+                <option value="paper">Paper</option>
+                <option value="terminal">Terminal</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <p class="gallery-status" id="gallery-status" aria-live="polite"></p>
+        <section id="gallery"></section>
+      </section>
     </main>
+
+    <footer class="shell">
+      <strong>ASCII Graphs</strong> — open source under MIT. Run this site
+      locally with <code>pnpm example:html</code>.
+    </footer>
     <script src="./generated/browser.global.js"></script>
   </body>
 </html>

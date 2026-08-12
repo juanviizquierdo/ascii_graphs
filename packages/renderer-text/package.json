@@ -1,22 +1,39 @@
 {
   "name": "@ascii-graphs/renderer-text",
-  "version": "0.0.1-alpha.0",
+  "version": "0.1.0-alpha.0",
   "description": "Plain-text renderer for portable ASCII charts",
+  "keywords": [
+    "ascii",
+    "charts",
+    "text",
+    "terminal",
+    "email",
+    "unicode"
+  ],
+  "author": "Juan Víctor Izquierdo",
   "type": "module",
   "sideEffects": false,
   "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     }
   },
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts --clean",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepack": "pnpm build"
   },
   "dependencies": {
     "@ascii-graphs/core": "workspace:*"
@@ -27,6 +44,7 @@
   },
   "publishConfig": {
     "access": "public",
-    "provenance": true
+    "provenance": true,
+    "tag": "next"
   }
 }
