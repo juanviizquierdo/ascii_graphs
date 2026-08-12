@@ -333,7 +333,7 @@ export function layoutCorrelationMatrix(
   const width = options.width ?? chart.width ?? DEFAULT_WIDTH;
   const titleRows = chart.title === undefined ? 0 : 2;
   const height =
-    options.height ?? chart.height ?? titleRows + chart.labels.length + 3;
+    options.height ?? chart.height ?? titleRows + chart.labels.length * 2 + 2;
   validateViewport(width, height);
   const charset = options.charset ?? "unicode";
   const palette = getPalette(charset);
@@ -342,12 +342,13 @@ export function layoutCorrelationMatrix(
     Math.floor(width * 0.25),
   );
   const cellWidth = Math.max(
-    2,
+    4,
     Math.min(
-      5,
+      8,
       Math.floor((width - labelWidth - 1) / Math.max(1, chart.labels.length)),
     ),
   );
+  const rowHeight = height - titleRows - 1 >= chart.labels.length * 2 ? 2 : 1;
   const grid = new GridBuilder(width, height);
   heading(grid, chart.title, width, palette.ellipsis);
   chart.labels.forEach((label, index) =>
@@ -362,19 +363,21 @@ export function layoutCorrelationMatrix(
   const glyphs =
     charset === "ascii" ? ["-", ".", "+", "#"] : ["▓", "░", "▒", "█"];
   chart.values.forEach((row, rowIndex) => {
+    const rowY = titleRows + 1 + rowIndex * rowHeight;
     grid.text(
       0,
-      titleRows + 1 + rowIndex,
+      rowY,
       truncateText(chart.labels[rowIndex] ?? "", labelWidth, palette.ellipsis),
       "label",
     );
     row.forEach((value, columnIndex) => {
       const level = Math.min(3, Math.floor(Math.abs(value) * 4));
       const glyph = glyphs[level] ?? glyphs[0] ?? ".";
+      const coefficient = `${value >= 0 ? "+" : ""}${value.toFixed(1)}`;
       grid.text(
         labelWidth + 1 + columnIndex * cellWidth,
-        titleRows + 1 + rowIndex,
-        `${value < 0 ? "-" : " "}${glyph}`,
+        rowY,
+        coefficient.padStart(Math.min(cellWidth - 1, coefficient.length + 1)),
         "series",
         { foreground: value < 0 ? "negative" : "positive" },
         {
@@ -382,6 +385,21 @@ export function layoutCorrelationMatrix(
           value,
         },
       );
+      if (rowHeight > 1)
+        grid.text(
+          labelWidth + 1 + columnIndex * cellWidth,
+          rowY + 1,
+          glyph.repeat(Math.max(1, cellWidth - 1)),
+          "series",
+          {
+            foreground:
+              rowIndex === columnIndex
+                ? "accent"
+                : value < 0
+                  ? "negative"
+                  : "positive",
+          },
+        );
     });
   });
   const headingText = chart.title ?? "Correlation matrix";
