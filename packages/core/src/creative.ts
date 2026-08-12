@@ -1235,8 +1235,7 @@ export function layoutCalibration(
   const grid = new GridBuilder(width, height);
   const top = title(grid, chart, palette.ellipsis);
   const left = 6,
-    bottom = height - 3,
-    plotRight = width - 1;
+    bottom = height - 2;
   const px = (v: number) => left + Math.round(v * (width - left - 2));
   const py = (v: number) => bottom - Math.round(v * (bottom - top));
   drawLine(
