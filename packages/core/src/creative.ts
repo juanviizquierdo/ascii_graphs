@@ -805,7 +805,7 @@ export function layoutContour(
   chart: ContourChart,
   options: LayoutOptions = {},
 ): CellGrid {
-  const { width, height, palette } = viewport(chart, options);
+  const { width, height, charset, palette } = viewport(chart, options);
   const grid = new GridBuilder(width, height);
   const top = title(grid, chart, palette.ellipsis);
   const xs = chart.data.map((p) => p.x);
@@ -817,23 +817,50 @@ export function layoutContour(
     maxY = Math.max(...ys),
     minV = Math.min(...values),
     maxV = Math.max(...values);
+  const fieldValue = (x: number, y: number) => {
+    let weighted = 0,
+      weights = 0;
+    for (const point of chart.data) {
+      const nx = (point.x - x) / Math.max(1e-9, maxX - minX);
+      const ny = (point.y - y) / Math.max(1e-9, maxY - minY);
+      const distanceSquared = nx * nx + ny * ny;
+      if (distanceSquared < 1e-10) return point.value ?? 0;
+      const weight = 1 / distanceSquared;
+      weighted += (point.value ?? 0) * weight;
+      weights += weight;
+    }
+    return weighted / Math.max(1e-9, weights);
+  };
   for (let y = top; y < height - 1; y += 1)
     for (let x = 5; x < width; x += 1) {
       const dx = minX + ((x - 5) / Math.max(1, width - 6)) * (maxX - minX);
       const dy =
         maxY - ((y - top) / Math.max(1, height - top - 2)) * (maxY - minY);
-      const nearest = [...chart.data].sort(
-        (a, b) =>
-          Math.hypot(a.x - dx, a.y - dy) - Math.hypot(b.x - dx, b.y - dy),
-      )[0];
+      const interpolated = fieldValue(dx, dy);
       const level = Math.round(
-        (((nearest?.value ?? 0) - minV) / Math.max(1e-9, maxV - minV)) *
+        ((interpolated - minV) / Math.max(1e-9, maxV - minV)) *
           (palette.density.length - 1),
       );
       grid.set(x, y, palette.density[level] ?? ".", "series", {
         foreground: `series${(level % 4) + 1}` as "series1",
       });
     }
+  chart.data.forEach((point) => {
+    const x =
+      5 +
+      Math.round(
+        ((point.x - minX) / Math.max(1e-9, maxX - minX)) * (width - 6),
+      );
+    const y =
+      top +
+      Math.round(
+        ((maxY - point.y) / Math.max(1e-9, maxY - minY)) * (height - top - 2),
+      );
+    grid.set(x, y, charset === "ascii" ? "o" : "○", "value", {
+      foreground: "accent",
+      bold: true,
+    });
+  });
   grid.text(0, top, formatValue(maxY), "label");
   grid.text(0, height - 2, formatValue(minY), "label");
   return chartTable(
