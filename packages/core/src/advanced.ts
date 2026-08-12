@@ -765,6 +765,17 @@ export function layoutChord(
       y: centerY + Math.round(Math.sin(angle) * radiusY),
     };
   });
+  const ringSteps = Math.max(24, width * 2);
+  for (let step = 0; step < ringSteps; step += 1) {
+    const angle = (step / ringSteps) * Math.PI * 2;
+    grid.set(
+      centerX + Math.round(Math.cos(angle) * radiusX),
+      centerY + Math.round(Math.sin(angle) * radiusY),
+      charset === "ascii" ? "." : "·",
+      "axis",
+      { foreground: "muted" },
+    );
+  }
   const links = chart.values.flatMap((row, source) =>
     row.flatMap((value, target) =>
       source === target || value === 0 ? [] : [{ source, target, value }],
@@ -783,8 +794,41 @@ export function layoutChord(
     const style = {
       foreground: `series${(index % 4) + 1}` as "series1",
     };
-    drawLine(grid, source.x, source.y, centerX, centerY, glyph, style);
-    drawLine(grid, centerX, centerY, target.x, target.y, glyph, style);
+    const sourceInner = {
+      x: centerX + Math.round((source.x - centerX) * 0.48),
+      y: centerY + Math.round((source.y - centerY) * 0.48),
+    };
+    const targetInner = {
+      x: centerX + Math.round((target.x - centerX) * 0.48),
+      y: centerY + Math.round((target.y - centerY) * 0.48),
+    };
+    drawLine(
+      grid,
+      source.x,
+      source.y,
+      sourceInner.x,
+      sourceInner.y,
+      glyph,
+      style,
+    );
+    drawLine(
+      grid,
+      sourceInner.x,
+      sourceInner.y,
+      targetInner.x,
+      targetInner.y,
+      glyph,
+      style,
+    );
+    drawLine(
+      grid,
+      targetInner.x,
+      targetInner.y,
+      target.x,
+      target.y,
+      glyph,
+      style,
+    );
   });
   nodes.forEach((node, index) => {
     const marker = charset === "ascii" ? String((index % 9) + 1) : "●";
