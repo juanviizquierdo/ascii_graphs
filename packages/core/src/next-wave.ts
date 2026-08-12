@@ -1511,11 +1511,27 @@ function multiples(chart: NextChart, options: LayoutOptions): CellGrid {
     );
   chart.series.forEach((item, index) => {
     const left = (index % columns) * cardWidth,
-      cardTop = top + Math.floor(index / columns) * cardHeight;
+      cardTop = top + Math.floor(index / columns) * cardHeight,
+      right = Math.min(width - 1, left + cardWidth - 2),
+      bottom = Math.min(height - 1, cardTop + cardHeight - 1);
+    const horizontal = charset === "ascii" ? "-" : "─";
+    const vertical = charset === "ascii" ? "|" : "│";
+    for (let x = left + 1; x < right; x += 1) {
+      grid.set(x, cardTop, horizontal, "axis", { foreground: "muted" });
+      grid.set(x, bottom, horizontal, "axis", { foreground: "muted" });
+    }
+    for (let y = cardTop + 1; y < bottom; y += 1) {
+      grid.set(left, y, vertical, "axis", { foreground: "muted" });
+      grid.set(right, y, vertical, "axis", { foreground: "muted" });
+    }
+    grid.set(left, cardTop, charset === "ascii" ? "+" : "┌", "axis");
+    grid.set(right, cardTop, charset === "ascii" ? "+" : "┐", "axis");
+    grid.set(left, bottom, charset === "ascii" ? "+" : "└", "axis");
+    grid.set(right, bottom, charset === "ascii" ? "+" : "┘", "axis");
     grid.text(
-      left,
+      left + 2,
       cardTop,
-      truncateText(item.label, cardWidth - 1, palette.ellipsis),
+      ` ${truncateText(item.label, Math.max(1, cardWidth - 6), palette.ellipsis)} `,
       "label",
       { bold: true },
     );
@@ -1524,28 +1540,33 @@ function multiples(chart: NextChart, options: LayoutOptions): CellGrid {
     item.values.forEach((value, point) => {
       const x =
         left +
+        1 +
         Math.round(
-          (point / Math.max(1, item.values.length - 1)) * (cardWidth - 2),
+          (point / Math.max(1, item.values.length - 1)) *
+            Math.max(1, right - left - 2),
         );
       const y =
         cardTop +
         1 +
         Math.round(
-          ((max - value) / Math.max(1e-9, max - min)) * (cardHeight - 2),
+          ((max - value) / Math.max(1e-9, max - min)) *
+            Math.max(1, bottom - cardTop - 2),
         );
       if (point > 0) {
         const previous = item.values[point - 1] ?? value;
         const px =
           left +
+          1 +
           Math.round(
             ((point - 1) / Math.max(1, item.values.length - 1)) *
-              (cardWidth - 2),
+              Math.max(1, right - left - 2),
           );
         const py =
           cardTop +
           1 +
           Math.round(
-            ((max - previous) / Math.max(1e-9, max - min)) * (cardHeight - 2),
+            ((max - previous) / Math.max(1e-9, max - min)) *
+              Math.max(1, bottom - cardTop - 2),
           );
         line(grid, px, py, x, y, charset === "ascii" ? "*" : "●", index);
       }
