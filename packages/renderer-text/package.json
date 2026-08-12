@@ -11,6 +11,10 @@
     "unicode"
   ],
   "author": "Juan Víctor Izquierdo",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juanviizquierdo/ascii_graphs.git"
+  },
   "type": "module",
   "sideEffects": false,
   "license": "MIT",
