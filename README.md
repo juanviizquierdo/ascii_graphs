@@ -23,6 +23,8 @@ logs, and docs.**
 
 </div>
 
+![ASCII Graphs browser gallery showing a revenue bar chart and sparkline](docs/assets/readme-hero.png)
+
 ```text
 Monthly revenue
 
@@ -41,6 +43,19 @@ parts.
 ```text
 chart specification → semantic CellGrid → text / ANSI / HTML / email
 ```
+
+## Example visualizations
+
+These examples are captured from the executable browser gallery and rendered by
+the same package code used by the terminal, HTML, and email outputs.
+
+|                                    Treemap                                    |                                  Calendar heatmap                                  |
+| :---------------------------------------------------------------------------: | :--------------------------------------------------------------------------------: |
+| ![Treemap showing bundle composition](docs/assets/readme-treemap-example.png) | ![Calendar heatmap showing daily activity](docs/assets/readme-heatmap-example.png) |
+
+Explore all [113 chart styles](#113-chart-styles), or run the
+[interactive gallery](#run-the-gallery) to change the width, character set, font
+size, and theme.
 
 The core package has no DOM, terminal, or filesystem dependency. Output stays
 useful without color, CSS, JavaScript, or even Unicode.
